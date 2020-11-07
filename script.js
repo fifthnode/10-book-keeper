@@ -6,6 +6,8 @@ const websiteNameEl = document.getElementById('website-name');
 const websiteUrlEl = document.getElementById('website-url');
 const bookmarksContainer = document.getElementById('bookmarks-container');
 
+let bookmarks = [];
+
 // Show modal, focus on input
 function showModal() {
   modal.classList.add('show-modal');
@@ -25,9 +27,6 @@ function validate(nameValue, urlValue) {
     alert('Please provide values for both fields.');
     return false;
   }
-  // if (urlValue.match(regex)) {
-  //   alert('match');
-  // }
   if (!urlValue.match(regex)) {
     alert('Please provide a valid web address');
     return false;
@@ -36,20 +35,49 @@ function validate(nameValue, urlValue) {
   return true;
 }
 
+// Fetch bookmarks
+function fetchBookmarks() {
+  // Get bookmarks from localStorage if available
+  if (localStorage.getItem('bookmarks')) {
+    bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
+  } else {
+    // Create bookmarks array in localStorage
+    bookmarks = [
+      {
+        name: 'No Starch Press',
+        url: 'https://nostarch.com/'
+      }
+    ];
+    localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+  }
+  console.log(bookmarks);
+}
+
 // Handle data from form
 function storeBookmark(e) {
   e.preventDefault();
-  // console.log(e);
   const nameValue = websiteNameEl.value;
   let urlValue = websiteUrlEl.value;
   if (!urlValue.includes('http://', 'https://')) {
     urlValue = `https://${urlValue}`;
   }
-  // console.log(nameValue, urlValue);
   if (!validate(nameValue, urlValue)) {
     return false;
   }
+  const bookmark = {
+    name: nameValue,
+    url: urlValue
+  };
+  bookmarks.push(bookmark);
+  // console.log(bookmarks);
+  localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+  fetchBookmarks();
+  bookmarkForm.reset();
+  websiteNameEl.focus();
 }
 
 // Event listener
 bookmarkForm.addEventListener('submit', storeBookmark);
+
+// On load, fetch bookmarks
+fetchBookmarks();
