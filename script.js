@@ -90,11 +90,11 @@ function fetchBookmarks() {
 
 // Delete a bookmark
 function deleteBookmark(id) {
-  // Loop through the bookmarks array
+  // Check the bookmarks object
   if (bookmarks[id]) {
     delete bookmarks[id]
   }
-  // Update bookmarks array in localStorage, re-populate DOM
+  // Update bookmarks object in localStorage, re-populate DOM
   localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
   fetchBookmarks();
 }
